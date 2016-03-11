@@ -42,9 +42,58 @@ struct trie *trie_new(void)
         return trie;
 }
 
+static struct trie_node *end_of_negative(struct trie_node *node)
+{
+        while (node->negative) {
+                node = node->negative;
+        }
+        return node;
+}
+
+static struct trie_node *delete_positive(struct trie_node *root,
+                                         struct trie_node **end_global)
+{
+        struct trie_node *end = *end_global;
+        // delete all positive branches
+        struct trie_node *node = root->positive;
+        while (node) {
+                // skip the node
+                if (node->data_flag) {
+                        root->positive = NULL;
+                } else {
+                        root->positive = node->positive;
+                }
+                // add negative branch to the end list
+                if (node->negative) {
+                        end->negative  = node->negative;
+                        end            = end_of_negative(end);
+                        node->negative = NULL;
+                }
+                // delete node and get next
+                free(node);
+                node = root->positive;
+        }
+        // delete the root node
+        node = root->negative;
+        free(root);
+        // update the end list
+        *end_global = end;
+
+        return node;
+}
+
 void trie_delete(struct trie **trie)
 {
-        // TODO: удалить все остальные элементы дерева
+        if (!trie || !(*trie))
+                return;
+        if ((*trie)->root) {
+                struct trie_node *root = (*trie)->root;
+                struct trie_node *end  = end_of_negative(root);
+
+                while (root) {
+                        root = delete_positive(root, &end);
+                }
+        }
         free(*trie);
         *trie = NULL;
 }
@@ -129,6 +178,7 @@ bool trie_insert(struct trie *root, const uint8_t *str, const size_t size,
 
         memcpy(&old, &last->data, sizeof(last->data));
         memcpy(&last->data, &data, sizeof(last->data));
+        last->data_flag = true;
 
         return true;
 }

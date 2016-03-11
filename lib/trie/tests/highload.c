@@ -8,16 +8,17 @@
 #include <trie.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 int main(void)
 {
         struct trie *obj = trie_new();
         void *data, *old;
-        char *str;
-        size_t str_cap;
-        ssize_t str_len;
-        FILE *input = fopen("/usr/share/dict/words", "r");
-        char first  = '\0';
+        char *str       = NULL;
+        size_t str_cap  = 0;
+        ssize_t str_len = 0;
+        FILE *input     = fopen("/usr/share/dict/words", "r");
+        char first      = '\0';
 
         for (size_t i = 0;; ++i) {
                 str_len = getline(&str, &str_cap, input);
@@ -30,12 +31,14 @@ int main(void)
                         // printf("Insert %c...\n", first);
                 }
                 str[str_len - 1] = '\0';
-                data = (void *)i;
+                data             = (void *)i;
                 if (!trie_insert(obj, (uint8_t *)str, str_len, data, &old)) {
                         printf("ERROR: trie insert '%s' failed\n", str);
                         return 1;
                 }
         }
+        free(str);
+        str = NULL;
 
         fseek(input, 0L, SEEK_SET);
 
@@ -57,6 +60,13 @@ int main(void)
                         return 1;
                 }
         }
+
+        free(str);
+        str = NULL;
+
+        fclose(input);
+
+        trie_delete(&obj);
 
         return 0;
 }
