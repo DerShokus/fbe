@@ -139,14 +139,27 @@ static inline struct trie_node *get_chain(const uint8_t *str, const size_t size,
         if (node == NULL)
                 return NULL;
 
+        bool need_free = false;
         for (size_t i = 1; i < size; ++i) {
                 node->positive = trie_node_new(str[i]);
-                node           = node->positive;
-                // TODO: in case of faile - remove all chain
+                if (!node) {
+                        need_free = true;
+                        break;
+                }
+                node = node->positive;
         }
 
-        if (last)
+        if (need_free) {
+                while (res) {
+                        struct trie_node *item = res;
+                        res                    = res->positive;
+                        free(item);
+                }
+        }
+
+        if (last) {
                 *last = node;
+        }
 
         return res;
 }
