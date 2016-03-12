@@ -13,7 +13,7 @@
 #include <stdio.h>
 
 struct trie_node {
-        uint8_t atom; // symbol
+        uint8_t symbol;
 
         struct trie_node *negative; // negative node
 
@@ -28,11 +28,11 @@ struct trie {
         struct trie_node *root;
 };
 
-static inline struct trie_node *trie_node_new(uint8_t atom)
+static inline struct trie_node *trie_node_new(uint8_t symbol)
 {
         struct trie_node *node = calloc(1, sizeof(struct trie_node));
         if (node)
-                node->atom = atom;
+                node->symbol = symbol;
         return node;
 }
 
@@ -117,7 +117,7 @@ static inline struct find_res trie_find(struct trie_node *root,
 
         for (i = 0; i <= (size - 1) && node;) {
                 prev = node;
-                if (node->atom == str[i]) {
+                if (node->symbol == str[i]) {
                         node = node->positive;
                         ++i;
                 } else {
@@ -182,7 +182,7 @@ bool trie_insert(struct trie *root, const uint8_t *str, const size_t size,
         } else {
                 struct trie_node *tail =
                     get_chain(&str[found.sz], size - found.sz, &last);
-                if (str[found.sz] == found.prev->atom) {
+                if (str[found.sz] == found.prev->symbol) {
                         found.prev->positive = tail;
                 } else {
                         found.prev->negative = tail;
