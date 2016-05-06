@@ -19,7 +19,7 @@ struct ast_node *ast_node_variable(char *start, char *end)
         struct ast_node *node = ast_node_new(TOKEN_VARIABLE);
 
         const size_t size = end - start;
-        char *token = malloc(size + 1);
+        char *token       = malloc(size + 1);
         strncpy(token, start, size);
         token[size] = '\0';
         node->token = token;

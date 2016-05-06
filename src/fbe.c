@@ -29,7 +29,7 @@ static struct fbe_context *fbe_context_new(void)
 {
         struct fbe_context *context = calloc(1, sizeof(struct fbe_context));
         if (context != NULL) {
-                context->arguments = trie_new();
+                context->arguments = trie_new(NULL, NULL);
                 if (context->arguments == NULL) {
                         free(context);
                         context = NULL;
@@ -223,7 +223,7 @@ inline static struct ast_node *stack_pop(struct node_stack **top)
 {
         struct ast_node *node  = (*top)->node;
         struct node_stack *ret = *top;
-        *top = ret->prev;
+        *top                   = ret->prev;
         free(ret);
         return node;
 }
@@ -304,7 +304,7 @@ struct fbe_res fbe_eval(const struct fbe *fbe, const bool args[],
 
         bool res;
         for (opcode_t opcode = command_opcode_get(cmd); opcode != OPCODE_END;
-             opcode                       = command_opcode_get(cmd)) {
+             opcode          = command_opcode_get(cmd)) {
                 const uint8_t register_id = command_register_get(cmd);
                 switch (opcode) {
                 case OPCODE_LOGICAL_OR: regs[register_id]  = false; break;
@@ -369,10 +369,10 @@ enum fbe_rc fbe_compile(struct fbe *fbe, const char *sourcecode)
         }
         const char *end = sourcecode + strlen(sourcecode);
         struct FSM fsm  = {
-            .p          = sourcecode,
-            .pe         = end,
-            .eof        = end,
-            .parser     = ParseAlloc(malloc),
+            .p      = sourcecode,
+            .pe     = end,
+            .eof    = end,
+            .parser = ParseAlloc(malloc),
         };
         struct ast_node *root = NULL;
         if (!lexer(&fsm, &root)) {

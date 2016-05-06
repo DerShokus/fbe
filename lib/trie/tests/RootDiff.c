@@ -20,7 +20,7 @@ int main(void)
         static struct word word2 = {
             .data = (uint8_t *)"baa", .size = 4, .value = (void *)0xB};
 
-        struct trie *obj = trie_new();
+        struct trie *obj = trie_new(NULL, NULL);
         assert(obj);
 
         void *data;

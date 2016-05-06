@@ -90,7 +90,7 @@ struct combinations combinations(size_t args_count)
 {
         const size_t cmb_count = 1 << args_count;
         const size_t args_size = sizeof(bool) * args_count;
-        bool **args = calloc(cmb_count, sizeof(bool *));
+        bool **args            = calloc(cmb_count, sizeof(bool *));
         for (size_t i = 0; i < cmb_count; ++i) {
                 args[i] = malloc(args_size);
         }
@@ -115,7 +115,7 @@ int main(void)
 
         for (size_t i = 0; i < sizeof(tests) / sizeof(tests[0]); ++i) {
                 struct combinations cmb = combinations(tests[i]->args_count);
-                bool *fbe_args          = calloc(tests[i]->args_count, sizeof(bool));
+                bool *fbe_args = calloc(tests[i]->args_count, sizeof(bool));
                 struct fbe fbe;
                 if (fbe_compile(&fbe, tests[i]->source) != FBE_OK) {
                         printf("COMPILE '%s' FAILED\n", tests[i]->source);

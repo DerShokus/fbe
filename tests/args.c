@@ -50,7 +50,7 @@ int main(void)
                 }
                 assert(counter == 1);
                 counter = 0;
-                rc = fbe_arg_set(&fbe, args_buf, 10, args[i].name,
+                rc      = fbe_arg_set(&fbe, args_buf, 10, args[i].name,
                                  !*args[i].val);
                 assert(rc == FBE_OK);
                 for (size_t j = 0; j < 10; ++j) {

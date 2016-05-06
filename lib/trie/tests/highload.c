@@ -9,10 +9,11 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <assert.h>
 
 int main(void)
 {
-        struct trie *obj = trie_new();
+        struct trie *obj = trie_new(NULL, NULL);
         void *data, *old;
         char *str       = NULL;
         size_t str_cap  = 0;
@@ -65,6 +66,23 @@ int main(void)
         str = NULL;
 
         fclose(input);
+
+        for (struct trie_node *i = trie_begin(obj); i; i = trie_next(i)) {
+                size_t size = 0;
+                if (trie_data(i, (void *)&size)) {
+                        // printf("> %zu\n", size);
+                } else
+                        assert(false);
+        }
+
+        for (struct trie_node *i = trie_begin(obj); i;
+             i                   = trie_next_delete(obj, i)) {
+                size_t size = 0;
+                if (trie_data(i, (void *)&size)) {
+                        // printf("to delete: %zu\n", size);
+                } else
+                        assert(false);
+        }
 
         trie_delete(&obj);
 

@@ -13,7 +13,7 @@ int main(void)
         static char word_1[] = "aaa";
         static char word_2[] = "bba";
 
-        struct trie *obj = trie_new();
+        struct trie *obj = trie_new(NULL, NULL);
 
         void *old, *data;
         data = (void *)0xA;

@@ -17,3 +17,4 @@ SpaceBeforeAssignmentOperators: true
 SpaceAfterCStyleCast: false
 PointerAlignment: Right
 AllowShortCaseLabelsOnASingleLine: true
+SortIncludes: false
